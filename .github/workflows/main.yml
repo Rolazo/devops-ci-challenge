@@ -1,0 +1,37 @@
+name: CI Pipeline
+
+on:
+    pull_request:
+      branches:
+        - main
+
+jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Install Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '15'
+        
+        - name: Upgrade npm to version 7
+          run: npm install -g npm@7
+
+        - name: Install Dependencies
+          run: cd codebase/rdicidr-0.1.0 && npm install
+
+        - name: Run Linter(ESLint)
+          run: cd codebase/rdicidr-0.1.0 && npm run lint
+
+        - name: Run Formatter (Pretttier)
+          run: cd codebase/rdicidr-0.1.0 && npm run prettier
+
+        - name: Run Tests
+          run: cd codebase/rdicidr-0.1.0 && CI=true npm run test
+
+        - name: Build the project
+          run: cd codebase/rdicidr-0.1.0 && npm run build
